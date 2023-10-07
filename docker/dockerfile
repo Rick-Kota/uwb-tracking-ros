@@ -17,6 +17,10 @@ RUN yes | pip install pyserial numpy
 WORKDIR $OVERLAY_WS/src
 RUN git clone -b dev https://github.com/Rick-Kota/uwb-tracking-ros.git
 
+# copy config file
+RUN rm -rf cfg
+COPY cfg/  uwb-tracking-ros/cfg/
+
 # RUN ls
 WORKDIR $OVERLAY_WS
 
