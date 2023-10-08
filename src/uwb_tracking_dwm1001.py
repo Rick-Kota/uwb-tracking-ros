@@ -43,6 +43,9 @@ class dwm1001_localizer:
         # Empty list for each tags of Kalman filter
         self.kalman_list = []
 
+        # altanative Kalman filter list
+        self.kalman_dict = {}
+
         self.multipleTags = MultiTags()
         self.pub_tags = rospy.Publisher("/dwm1001/multiTags", MultiTags, queue_size=100)
 
@@ -122,9 +125,9 @@ class dwm1001_localizer:
                         # t_pose_xyz = np.array([t_pose_x, t_pose_y, t_pose_z])
                         t_pose_xyz.shape = (len(t_pose_xyz), 1)  # force to be a column vector
 
-                        if tag_macID not in self.kalman_list:  # TODO: tag_macID
+                        if tag_macID not in self.kalman_dict:  # TODO: tag_macID
                             # self.kalman_list.append(tag_id)
-                            self.kalman_list.append(tag_macID)
+                            # self.kalman_list.append(tag_macID)
                             # Suppose constant velocity motion model is used (x,y,z and velocities in 3D)
                             A = np.zeros((6, 6))
                             H = np.zeros((3, 6))  # measurement (x,y,z without velocities)
@@ -133,24 +136,24 @@ class dwm1001_localizer:
                             # A = np.zeros((9,9))
                             # H = np.zeros((3, 9))
                             # idx = self.kalman_list.index(tag_id)
-                            self.kalman_list[tag_id] = kf(A, H, tag_macID)  # create KF object for tag id
+                            self.kalman_dict[tag_macID] = kf(A, H, tag_macID)  # create KF object for tag id
                             # self.kalman_list[tag_id] = kf(A, H, tag_macID) # create KF object for tag id
                             # print(self.kalman_list[tag_id].isKalmanInitialized)
 
                         # idx_kf = self.kalman_list.index(tag_id)
                         # idx = self.kalman_list.index(tag_macID)  # index of the Tag ID
 
-                        if self.kalman_list[tag_id].isKalmanInitialized == False:
+                        if self.kalman_dict[tag_macID].isKalmanInitialized == False:
                             # Initialize the Kalman by asigning required parameters
                             # This should be done only once for each tags
                             A, B, H, Q, R, P_0, x_0 = initConstVelocityKF()  # for const velocity model
                             # A, B, H, Q, R, P_0, x_0  = initConstAccelerationKF() # for const acceleration model
 
-                            self.kalman_list[tag_id].assignSystemParameters(A, B, H, Q, R, P_0, x_0)  # [tag_id]
-                            self.kalman_list[tag_id].isKalmanInitialized = True
+                            self.kalman_dict[tag_macID].assignSystemParameters(A, B, H, Q, R, P_0, x_0)  # [tag_id]
+                            self.kalman_dict[tag_macID].isKalmanInitialized = True
                             # print(self.kalman_list[tag_id].isKalmanInitialized)
 
-                        self.kalman_list[tag_id].performKalmanFilter(t_pose_xyz, 0)
+                        self.kalman_dict[tag_macID].performKalmanFilter(t_pose_xyz, 0)
                         t_pose_vel_kf = self.kalman_list[
                             tag_id
                         ].x_m  # state vector contains both pose and velocities data
