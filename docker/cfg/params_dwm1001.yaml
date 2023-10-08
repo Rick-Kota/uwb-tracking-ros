@@ -1,5 +1,7 @@
 port: "/dev/ttyACM0"
-tag_name: "tag"
+tag_name: 
+  -"DW4780"
+  -"DW490D"
 use_network: False
-network: "dwm1001_network"
+network: "N415"
 verbose: True
