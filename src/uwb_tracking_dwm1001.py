@@ -159,8 +159,8 @@ class dwm1001_localizer:
                             # print(self.kalman_list[tag_id].isKalmanInitialized)
 
                         self.kalman_dict[tag_macID].performKalmanFilter(t_pose_xyz, 0)
-                        t_pose_vel_kf = self.kalman_list[
-                            tag_id
+                        t_pose_vel_kf = self.kalman_dict[
+                            tag_macID
                         ].x_m  # state vector contains both pose and velocities data
                         t_pose_kf = t_pose_vel_kf[0:3]  # extract only position data (x,y,z)
                         # print(t_pose_kf)
