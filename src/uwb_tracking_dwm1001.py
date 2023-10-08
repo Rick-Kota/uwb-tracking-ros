@@ -30,8 +30,8 @@ class dwm1001_localizer:
 
         # allow serial port to be detected by user
         # NOTE: USB is assumed to be connected to ttyACM0. If not, need to modified it.
-        # os.popen("sudo chmod 777 /dev/ttyACM0", "w")  
-        
+        os.popen("sudo chmod 777 /dev/ttyACM0", "w")
+
         # Set a ROS rate
         self.rate = rospy.Rate(1)
         
