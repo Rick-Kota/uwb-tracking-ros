@@ -96,7 +96,6 @@ class dwm1001_localizer:
                 try:
                     # Publish the Raw Pose Data directly from the USB
                     self.publishTagPositions(serialReadLine)
-                    print("Watch point 1", self.kalman_list)  ###########################################
 
                     ############### Kalman Filter ###############
                     # Use Kalman filter to process the data and publish it
@@ -104,7 +103,6 @@ class dwm1001_localizer:
 
                     # If getting a tag position
                     if b"POS" in serDataList[0]:
-                        print("Watch point 2", self.kalman_list)  ###########################################
                         # rospy.loginfo(arrayData)  # just for debug
 
                         tag_id = int(serDataList[1])
@@ -116,7 +114,6 @@ class dwm1001_localizer:
 
                         # To use this raw pose of DWM1001 as a measurement data in KF
                         t_pose_list = [t_pose_x, t_pose_y, t_pose_z]
-                        print("Watch point 3", self.kalman_list)  ###########################################
 
                         # Discard the pose data from USB if there exists "nan" in the values
                         if np.isnan(t_pose_list).any():
@@ -129,7 +126,7 @@ class dwm1001_localizer:
                         t_pose_xyz.shape = (len(t_pose_xyz), 1)  # force to be a column vector
 
                         if tag_macID not in self.kalman_dict:  # TODO: tag_macID
-                            print("Watch point 4", self.kalman_list)  ###########################################
+                            rospy.loginfo("New UWB-Tags found!")
                             # self.kalman_list.append(tag_id)
                             # self.kalman_list.append(tag_macID)
                             # Suppose constant velocity motion model is used (x,y,z and velocities in 3D)
@@ -141,7 +138,6 @@ class dwm1001_localizer:
                             # H = np.zeros((3, 9))
                             # idx = self.kalman_list.index(tag_id)
                             self.kalman_dict[tag_macID] = kf(A, H, tag_macID)  # create KF object for tag id
-                            print("Watch point 5", self.kalman_list)  ###########################################
                             # self.kalman_list[tag_id] = kf(A, H, tag_macID) # create KF object for tag id
                             # print(self.kalman_list[tag_id].isKalmanInitialized)
 
