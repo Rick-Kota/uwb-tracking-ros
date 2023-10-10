@@ -8,7 +8,7 @@
     2. https://www.decawave.com/product-documentation/    
 """
 
-import os
+import subprocess
 import time
 
 import numpy as np
@@ -32,7 +32,7 @@ class dwm1001_localizer:
 
         # allow serial port to be detected by user
         # NOTE: USB is assumed to be connected to ttyACM0. If not, need to modified it.
-        os.popen("sudo chmod 777 /dev/ttyACM0", "w")
+        subprocess.run(["sudo", "chmod", "777", "/dev/ttyACM0"])
 
         # Set a ROS rate
         self.rate = rospy.Rate(1)
